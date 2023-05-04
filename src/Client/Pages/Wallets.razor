@@ -1,0 +1,86 @@
+﻿@page "/wallets"
+@using BlazorWallets.Shared
+@using System.Diagnostics
+@using System.Net
+@using System.Text.Json
+@inject HttpClient Http
+
+<PageTitle>Wallets</PageTitle>
+
+<h3>Wallets</h3>
+
+@if(data == null)
+{
+    if(!String.IsNullOrEmpty(errorMessage))
+    {
+        <p>@errorMessage</p>
+    } 
+    else
+    {
+        <p>Загрузка данных...</p>
+    }
+}
+else
+{
+    <p>Время выполнения запроса: @elapsedMilliseconds мс</p>
+    <table>
+        <thead>
+            <tr>Id</tr>
+            <tr>Address</tr>
+            <tr>Balance</tr>
+        </thead>
+        <tbody>
+            @foreach (var item in data)
+            {
+                <tr>
+                    <td>@item.Id</td>
+                    <td>@item.Address</td>
+                    <td>@item.Balance</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    private IEnumerable<Wallet> data;
+    private string errorMessage;
+    private long elapsedMilliseconds;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Stopwatch stopwatch = new Stopwatch();
+        stopwatch.Start();
+
+        try
+        {
+            var response = await Http.GetAsync("api/wallet");
+            if (response.IsSuccessStatusCode)
+            {
+                data = await response.Content.ReadFromJsonAsync<IEnumerable<Wallet>>();
+            }
+            else
+            {
+                var errorContent = await response.Content.ReadAsStringAsync();
+                if (!string.IsNullOrEmpty(errorContent))
+                {
+                    var error = JsonSerializer.Deserialize<Error>(errorContent);
+                    errorMessage = error.Message;
+                }
+                else
+                {
+                    errorMessage = "Неизвестная ошибка";
+                }
+            }
+        }
+        catch (HttpRequestException ex)
+        {
+            errorMessage = ex.Message;
+        }
+
+        stopwatch.Stop();
+        elapsedMilliseconds = stopwatch.ElapsedMilliseconds;
+
+    }
+}
