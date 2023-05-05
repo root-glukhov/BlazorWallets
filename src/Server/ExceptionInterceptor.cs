@@ -22,15 +22,15 @@ public class ExceptionInterceptor
             await _next(context);
         }
         catch (ArgumentNullException ex)
-        when (ex.ParamName == "WalletService.GetWalletsAsync.RawResponse")
+        when (ex.ParamName == "result")
         {
             await HandleExceptionAsync(context, ex.Message, HttpStatusCode.TooManyRequests,
-                "Слишком много запросов к RPC ноде");
+                "Слишком много запросов к RPC ноде. Повторите попытку позже");
         }
         catch (Exception ex)
         {
             await HandleExceptionAsync(context, ex.Message, HttpStatusCode.InternalServerError,
-                "Неизвестная ошибка");
+                ex.Message);
         }
     }
 

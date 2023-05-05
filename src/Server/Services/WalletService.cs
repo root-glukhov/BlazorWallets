@@ -43,11 +43,10 @@ public class WalletService
                 for (int j = 0; j < response.BatchItems.Count; j++)
                 {
                     var result = response.BatchItems[j];
-
-                    if (result.RawResponse == null)
+                    if(result.HasError)
                     {
-                        throw new ArgumentNullException("WalletService.GetWalletsAsync.RawResponse");
-                    }
+                        throw new ArgumentNullException(nameof(result));
+                    } 
                     else
                     {
                         var balance = Web3.Convert.FromWei((HexBigInteger)result.RawResponse);
