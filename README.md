@@ -1,5 +1,7 @@
 # BlazorWallets
 
+![image](https://i.postimg.cc/mZPbnFQ3/2023-05-05-111852.png)
+
 Перед запуском приложения, в консоли перейдите в папку `/src/Server` и вызовите команду `dotnet user-secrets set "RpcEndpoint" "Адрес вашей конечной точки RPC"`
 
 Узнать подробнее про [Microsoft.Extensions.Configuration.UserSecrets](https://learn.microsoft.com/ru-ru/dotnet/api/microsoft.extensions.configuration.usersecrets)
