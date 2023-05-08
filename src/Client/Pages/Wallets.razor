@@ -23,11 +23,13 @@
 else
 {
     <p>Время выполнения запроса: @elapsedMilliseconds мс</p>
-    <table>
+    <table class="table">
         <thead>
-            <tr>Id</tr>
-            <tr>Address</tr>
-            <tr>Balance</tr>
+            <tr>
+                <th>Id</th>
+                <th>Address</th>
+                <th>Balance</th>
+            </tr>
         </thead>
         <tbody>
             @foreach (var item in data)
