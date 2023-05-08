@@ -43,9 +43,9 @@ public class WalletService
                 for (int j = 0; j < response.BatchItems.Count; j++)
                 {
                     var result = response.BatchItems[j];
-                    if(result.HasError)
+                    if (result.HasError && result.RpcError.Code == 429)
                     {
-                        throw new ArgumentNullException(nameof(result));
+                        throw new TooManyRequestsException();
                     } 
                     else
                     {

@@ -21,8 +21,7 @@ public class ExceptionInterceptor
         {
             await _next(context);
         }
-        catch (ArgumentNullException ex)
-        when (ex.ParamName == "result")
+        catch (TooManyRequestsException ex)
         {
             await HandleExceptionAsync(context, ex.Message, HttpStatusCode.TooManyRequests,
                 "Слишком много запросов к RPC ноде. Повторите попытку позже");
@@ -30,7 +29,7 @@ public class ExceptionInterceptor
         catch (Exception ex)
         {
             await HandleExceptionAsync(context, ex.Message, HttpStatusCode.InternalServerError,
-                ex.Message);
+                "Ошибка выполнения запроса");
         }
     }
 
