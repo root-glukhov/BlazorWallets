@@ -13,7 +13,14 @@ public class WalletService
 
     public WalletService(IConfiguration configuration)
     {
-        web3 = new Web3(configuration["RpcEndpoint"]);
+        if (string.IsNullOrEmpty(configuration["RpcEndpoint"]))
+        {
+            throw new ArgumentNullException("RpcEndpoint", "RpcEndpoint не указан в конфигурации");
+        }
+        else
+        {
+            web3 = new Web3(configuration["RpcEndpoint"]);
+        }
     }
 
     public async Task<IEnumerable<Wallet>> GetWalletsAsync(List<Wallet> wallets)

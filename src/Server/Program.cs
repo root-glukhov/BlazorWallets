@@ -31,7 +31,7 @@ else
     app.UseHsts();
 }
 
-app.UseMiddleware<ExceptionInterceptor>();
+app.UseMiddleware<ExceptionHandler>();
 
 app.UseHttpsRedirection();
 

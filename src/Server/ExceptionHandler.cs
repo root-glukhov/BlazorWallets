@@ -4,12 +4,12 @@ using System.Net;
 
 namespace BlazorWallets.Server;
 
-public class ExceptionInterceptor
+public class ExceptionHandler
 {
     private readonly RequestDelegate _next;
-    private readonly ILogger<ExceptionInterceptor> _logger;
+    private readonly ILogger<ExceptionHandler> _logger;
 
-    public ExceptionInterceptor(RequestDelegate next, ILogger<ExceptionInterceptor> logger)
+    public ExceptionHandler(RequestDelegate next, ILogger<ExceptionHandler> logger)
     {
         _next = next;
         _logger = logger;
@@ -21,15 +21,18 @@ public class ExceptionInterceptor
         {
             await _next(context);
         }
-        catch (TooManyRequestsException ex)
-        {
-            await HandleExceptionAsync(context, ex.Message, HttpStatusCode.TooManyRequests,
-                "Слишком много запросов к RPC ноде. Повторите попытку позже");
-        }
         catch (Exception ex)
         {
-            await HandleExceptionAsync(context, ex.Message, HttpStatusCode.InternalServerError,
-                "Ошибка выполнения запроса");
+            if (ex is TooManyRequestsException)
+            {
+                await HandleExceptionAsync(context, ex.Message, HttpStatusCode.TooManyRequests,
+                    "Слишком много запросов к RPC ноде. Повторите попытку позже");
+            }
+            else
+            {
+                await HandleExceptionAsync(context, ex.Message, HttpStatusCode.InternalServerError,
+                    "Ошибка выполнения запроса");
+            }
         }
     }
 
